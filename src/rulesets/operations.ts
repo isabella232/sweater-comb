@@ -194,6 +194,28 @@ export const rules = {
       },
     );
   },
+  queryParameterIdFormatting: ({ request }: SnykApiCheckDsl) => {
+    request.queryParameter.added.must(
+      "use UUID format for query params with _id suffix",
+      (queryParameter, context, docs) => {
+        // TODO
+        expect.fail(
+          `expected request query parameter ${queryParameter.name} to use format UUID`,
+        );
+      },
+    );
+
+    request.queryParameter.added.must(
+      "use _id suffix for UUID formatted query params",
+      (queryParameter, context, docs) => {
+        // TODO
+        expect.fail(
+          `expected request query parameter ${queryParameter.name} to have _id suffix`,
+        );
+      },
+    );
+  },
+
   preventAddingRequiredQueryParameters: ({ request }: SnykApiCheckDsl) => {
     request.queryParameter.added.must(
       "not be required",

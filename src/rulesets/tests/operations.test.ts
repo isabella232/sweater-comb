@@ -313,6 +313,46 @@ describe("operation parameters", () => {
       expect(result).toMatchSnapshot();
     });
 
+    describe.only("Id query parameter", () => {
+      it("fails when adding foo_id query parameter not formated as UUID", async () => {
+        const result = await compare(baseForOperationMetadataTests)
+          .to((spec) => {
+            spec.paths!["/example"]!.get!.parameters = [
+              {
+                in: "query",
+                name: "foo_id",
+              },
+            ];
+            return spec;
+          })
+          .withRule(rules.queryParameterIdFormatting, emptyContext);
+
+        expect(result.results[0].passed).toBeFalsy();
+        // expect(result).toMatchSnapshot();
+      });
+
+      it("fails when adding UUID formated query parameter not named with _id suffix", async () => {
+        const result = await compare(baseForOperationMetadataTests)
+          .to((spec) => {
+            spec.paths!["/example"]!.get!.parameters = [
+              {
+                in: "query",
+                name: "foo",
+                schema: {
+                  type: "string",
+                  format: "uuid",
+                },
+              },
+            ];
+            return spec;
+          })
+          .withRule(rules.queryParameterIdFormatting, emptyContext);
+
+        expect(result.results[0].passed).toBeFalsy();
+        // expect(result).toMatchSnapshot();
+      });
+    });
+
     it("fails when adding a required query parameter", async () => {
       // const base = JSON.parse(JSON.stringify(baseForOperationMetadataTests));
       // base.paths!["/example"]!.get!.parameters = [];
